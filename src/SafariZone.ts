@@ -8,7 +8,7 @@ import {Bot} from './Models/Bot';
 
 export class SafariZone{
     private config ?: IConfig;
-    private bots ?: Bot[];
+    private bots ?: Bot[] = new Array();
 
     constructor(){
         Logger.log('Starting Safari Zone v2.0', colors.fg.Blue);
@@ -16,7 +16,10 @@ export class SafariZone{
         this.readConfig()
         .then(config=>{
             this.config = config;
-            this.initBots();
+            this.initBots()
+            .then(reuslt =>{
+                this.checkAccountStatus();
+            });
         });
 
     }
@@ -38,13 +41,30 @@ export class SafariZone{
         return defer.promise;
     }
 
-    private initBots(){
+    private initBots() : q.Promise<boolean>{
+        let defer = q.defer<boolean>();
         Logger.log('Initializing bots...', colors.fg.Blue);
         let count = 0;
         for(let token of this.config.tokens){
             Logger.log('Creating bot for '.concat(token), colors.fg.Blue);
-            
+            let bot = new Bot(token);
+            bot.init()
+            .then(result =>{
+                count++;
+                if(result){
+                    this.bots.push(bot);
+                }
+                if(count == this.config.tokens.length){
+                    defer.resolve(true);
+                }
+            })
         }
+        return defer.promise;
     }
 
+    private checkAccountStatus(){
+        if(this.bots.length > 0){
+            Logger.log('Found '.concat(this.bots.length.toString()).concat(' bots, proceeding'), colors.fg.Green);
+        }
+    }
 }
