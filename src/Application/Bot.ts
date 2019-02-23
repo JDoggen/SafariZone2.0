@@ -13,6 +13,10 @@ export class Bot{
         this.client = new Discord.Client();
     }
 
+    public getID() : string{
+        return this.client.user.id;
+    }
+
     public init() : q.Promise<boolean>{
         let defer = q.defer<boolean>();
         this.client.login(this.token)
@@ -33,5 +37,11 @@ export class Bot{
         this.client.on('message', message => {this.messageHandler.handle(message)});
         Logger.log('Started polling...', colors.fg.Blue);
     }
+
+    public sendMessage(channelID : string, message : string){
+        let channel = this.client.channels.get(channelID) as Discord.TextChannel;
+        channel.send(message);
+    }
+
 }
 

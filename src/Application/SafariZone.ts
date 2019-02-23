@@ -90,7 +90,7 @@ export class SafariZone{
     }
 
     private startPolling() : void{
-        let messageHandler = new MessageHandler(this.bots);
+        let messageHandler = new MessageHandler(this.bots, this.config);
         this.bots[0].startPolling(messageHandler);
     }
 }

@@ -1,4 +1,5 @@
 export interface IConfig{
+    prefix : string,
     channelIDs : {
         spamChannel : string;
         spawnChannel : string;

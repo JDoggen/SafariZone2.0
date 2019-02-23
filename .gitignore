@@ -5,7 +5,7 @@ desktop.ini
 safarizone-linux
 safarizone-macos
 safarizone-win.exe
-src/out/
+out/
 
 # Logs
 logs

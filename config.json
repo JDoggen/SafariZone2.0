@@ -1,4 +1,5 @@
 {
+    "prefix" : "+",
     "channelIDs" : {
         "spamChannel" : "538809106144821249",
         "spawnChannel" : "504704524645040130"
