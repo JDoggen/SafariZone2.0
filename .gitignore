@@ -1,6 +1,10 @@
 # Project specifig
 app.js
 config.json
+safarizone-linux
+safarizone-macos
+safarizone-win.exe
+src/out/
 
 # Logs
 logs
