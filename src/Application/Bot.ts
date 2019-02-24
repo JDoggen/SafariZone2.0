@@ -2,15 +2,31 @@ import * as Discord from 'discord.js';
 import * as q from 'q';
 import { Logger, colors } from '../Modules/Logger/Logger';
 import { MessageHandler } from './MessageHandler';
+import { IBotConfig } from '../Models/IBotConfig';
 
 export class Bot{
     private client : Discord.Client;
     private messageHandler : MessageHandler;
+    public botConfig : IBotConfig;
 
     constructor(
         private token: string
     ){
         this.client = new Discord.Client();
+        this.botConfig = {
+                autolisting : {
+                pokemonID : '',
+                channelID : '',
+                price : 0,
+                stage : 0,
+                IV: 0,
+                pokemon : '',
+                TopIVs : new Array(),
+                TopPrices : new Array(),
+                BottomIVs : new Array(),
+                BottomPrices : new Array()
+            } 
+        } as IBotConfig;
     }
 
     public getID() : string{
@@ -41,6 +57,11 @@ export class Bot{
     public sendMessage(channelID : string, message : string){
         let channel = this.client.channels.get(channelID) as Discord.TextChannel;
         channel.send(message);
+    }
+
+    public retrieveMessages(channelID : string, amount : number) : Promise<Discord.Collection<string, Discord.Message>>{
+        let channel = this.client.channels.get(channelID) as Discord.TextChannel;
+        return channel.fetchMessages({limit : amount})
     }
 
 }

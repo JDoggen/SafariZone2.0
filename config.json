@@ -1,4 +1,5 @@
 {
+    "pokecordPrefix" : "-",
     "prefix" : "+",
     "channelIDs" : {
         "spamChannel" : "538809106144821249",
@@ -15,12 +16,14 @@
         "catchVariable" : 10000,
         "infoMin" : 3000,
         "infoVariable" : 3000,
-        "unknownPokemon" : 5000
+        "unknownPokemon" : 5000,
+        "autoList" : 5000
     },
     "timeouts" : {
         "spawn" : 30000,
         "unknownSpawn" : 180000
     },
+    "maxAutolistingStages" : 15,
     "undetectableList" : [
         "Arceus",
         "Meloetta",

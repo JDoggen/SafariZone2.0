@@ -1,4 +1,5 @@
 export interface IConfig{
+    pokecordPrefix : string,
     prefix : string,
     channelIDs : {
         spamChannel : string;
@@ -12,11 +13,13 @@ export interface IConfig{
         infoMin : number;
         infoVariable : number;
         unknownPokemon : number;
+        autoList : number;
     },
     timeouts : {
         spam : number; 
         unknownPokemon : number;
     };
+    maxAutolistingStages : number;
     undetectableList : string[];
     legendaryList : string[]
 }
