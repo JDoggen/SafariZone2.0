@@ -1,4 +1,5 @@
 {
+    "autocatch" : true,
     "pokecordPrefix" : "-",
     "prefix" : "+",
     "channelIDs" : {

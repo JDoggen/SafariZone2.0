@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import * as q from 'q';
 import { Logger, colors } from '../Modules/Logger/Logger';
-import { MessageHandler } from './MessageHandler';
+import { MessageHandler } from './Handlers/MessageHandler';
 import { IBotConfig } from '../Models/IBotConfig';
 
 export class Bot{

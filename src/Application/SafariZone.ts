@@ -5,12 +5,16 @@ import * as fs from 'fs';
 import {Logger, colors} from '../Modules/Logger/Logger';
 import {Bot} from './Bot';
 import {Dictionary} from '../Models/Dictionary';
-import { MessageHandler } from './MessageHandler';
+import { MessageHandler } from './Handlers/MessageHandler';
+import { SpamHandler } from './Handlers/SpamHandler';
+import { CatchHandler } from './Handlers/CatchHandler';
 
 export class SafariZone{
     private config ?: IConfig;
     private bots ?: Bot[] = new Array();
     private dictionary : Dictionary;
+    private spamHandler : SpamHandler;
+    private catchHandler : CatchHandler;
 
     constructor(){
         Logger.log('Starting Safari Zone v2.0', colors.fg.Blue);
@@ -90,7 +94,10 @@ export class SafariZone{
     }
 
     private startPolling() : void{
-        let messageHandler = new MessageHandler(this.bots, this.config);
+        this.catchHandler = new CatchHandler(this.config, this.bots);
+        this.spamHandler = new SpamHandler(this.config);
+        let messageHandler = new MessageHandler(this.bots, this.config, this.catchHandler);
         this.bots[0].startPolling(messageHandler);
+
     }
 }
