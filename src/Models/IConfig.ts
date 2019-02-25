@@ -1,5 +1,6 @@
 export interface IConfig{
     autocatch : boolean,
+    spamming : boolean,
     pokecordPrefix : string,
     prefix : string,
     channelIDs : {

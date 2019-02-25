@@ -21,7 +21,7 @@ export class MessageHandler{
 
     public handle(message: Discord.Message){
         if(message.author.id === this.config.pokeCordID){
-            CMD_PokeCordMessage.execute(message, this.catchHandler, this.config);
+            CMD_PokeCordMessage.execute(message, this.catchHandler, this.config, this.bots);
         }else {
             message.content = message.content.trim().toLowerCase();
             let prefix = message.content.substr(0,1);

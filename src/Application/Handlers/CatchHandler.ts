@@ -1,27 +1,36 @@
 import { Bot } from "../Bot";
-import * as Discord from "discord.js";
 import { IConfig } from "../../Models/IConfig";
-import { CMD_PokeCordMessage } from "../Commands/CMD_PokecordMessage";
-import { CMD_Spam } from "../Commands/CMD_Spam";
-import { CMD_Autocatch } from "../Commands/CMD_Autocatch";
-import { CMD_Autolist } from "../Commands/CMD_Autolist";
-import { CMD_Cmd } from "../Commands/CMD_Cmd";
-import { Logger, colors } from "../../Modules/Logger/Logger";
-import { CMD_Confirm } from "../Commands/CMD_Confirm";
+import { SpamHandler } from "./SpamHandler";
 
 export class CatchHandler{
     constructor(
         private config : IConfig,
-        private bots : Bot[]
+        private bots : Bot[],
+        private spamHandler : SpamHandler
     ){
-        setInterval(this.pollAutocatch, 2500, this.config, bots);
     }
     public catch(pokemon : string){
-        //IMPLEMENT
+        if (pokemon.toLowerCase().includes("could not be identified")){ 
+            this.spamHandler.delaySpamming(this.config.delays.unknownPokemon);
+            setTimeout(this.catchUnknownPokemon, this.config.delays.unknownPokemon, this.config, this.config.undetectableList, this.sendCatchCommand);
+        } else{
+            pokemon = pokemon.replace("<div class='typewriter'>", "").replace("</div>", "");
+            let delay = Math.round(Math.random() * (this.config.delays.catchVariable) + this.config.delays.catchMin);
+            this.spamHandler.delaySpamming(delay);
+            setTimeout(this.sendCatchCommand, delay, this.config, this.bots[Math.floor(Math.random() * this.bots.length)], pokemon, 0);
+            
+        }
     }
 
-    private pollAutocatch(config : IConfig, bots : Bot[]){
-        console.log(config.autocatch);
+    private catchUnknownPokemon(config : IConfig, undetectableList : string[], stage : number, bots: Bot[], catchFunction : Function, catchUnkownFunction : Function){
+        if(!(stage >= undetectableList.length)){
+            catchFunction(config, bots[Math.floor(Math.random() * this.bots.length)], undetectableList[stage]);
+            setTimeout(catchUnkownFunction, config.delays.unknownPokemon, config, undetectableList, stage, bots, catchFunction, catchUnkownFunction);
+        }
+    }
+
+    private sendCatchCommand(config : IConfig, bot : Bot, pokemon : string){
+        bot.sendMessage(config.channelIDs.spawnChannel, config.pokecordPrefix.concat('catch ').concat(pokemon));
     }
 
 

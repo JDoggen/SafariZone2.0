@@ -1,4 +1,5 @@
 {
+    "spamming" : true,
     "autocatch" : true,
     "pokecordPrefix" : "-",
     "prefix" : "+",

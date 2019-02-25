@@ -59,8 +59,8 @@ export class Dictionary{
         return sentence.charAt(0).toUpperCase() + sentence.slice(1);
     }
 
-    private randomWord(){
-        let word = Math.floor((Math.random() * Dictionary.length));
+    private randomWord() : string{
+        let word = Math.floor((Math.random() * this.dictionary.length));
         return this.dictionary[word];
     }
 }

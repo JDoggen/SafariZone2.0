@@ -70,6 +70,9 @@ export class SafariZone{
                 if(count == this.config.tokens.length){
                     defer.resolve(true);
                 }
+            }).catch(err =>{
+                Logger.log('Error:', colors.fg.Red);
+                Logger.log(err, colors.fg.Red);
             })
         }
         return defer.promise;
@@ -94,8 +97,8 @@ export class SafariZone{
     }
 
     private startPolling() : void{
-        this.catchHandler = new CatchHandler(this.config, this.bots);
-        this.spamHandler = new SpamHandler(this.config);
+        this.spamHandler = new SpamHandler(this.config, this.bots, this.dictionary);
+        this.catchHandler = new CatchHandler(this.config, this.bots, this.spamHandler);
         let messageHandler = new MessageHandler(this.bots, this.config, this.catchHandler);
         this.bots[0].startPolling(messageHandler);
 

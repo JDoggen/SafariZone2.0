@@ -64,5 +64,9 @@ export class Bot{
         return channel.fetchMessages({limit : amount})
     }
 
+    public getBotUser() : Discord.ClientUser{
+        return this.client.user;
+    }
+
 }
 
