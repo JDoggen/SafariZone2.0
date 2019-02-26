@@ -1,12 +1,14 @@
 import { Bot } from "../Bot";
 import { IConfig } from "../../Models/IConfig";
 import { SpamHandler } from "./SpamHandler";
+import { LoggingHandler } from "./LoggingHandler";
 
 export class CatchHandler{
     constructor(
         private config : IConfig,
         private bots : Bot[],
-        private spamHandler : SpamHandler
+        private spamHandler : SpamHandler,
+        private loggingHandler : LoggingHandler
     ){
     }
     public catch(pokemon : string){

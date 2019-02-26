@@ -9,6 +9,7 @@ import { CMD_Cmd } from "../Commands/CMD_Cmd";
 import { Logger, colors } from "../../Modules/Logger/Logger";
 import { CMD_Confirm } from "../Commands/CMD_Confirm";
 import { CatchHandler } from "./CatchHandler";
+import { LoggingHandler } from "./LoggingHandler";
 
 export class MessageHandler{
    
@@ -16,12 +17,13 @@ export class MessageHandler{
     constructor(
         private bots : Bot[],
         private config : IConfig,
-        private catchHandler : CatchHandler
+        private catchHandler : CatchHandler,
+        private loggingHandler : LoggingHandler
     ){}
 
     public handle(message: Discord.Message){
         if(message.author.id === this.config.pokeCordID){
-            CMD_PokeCordMessage.execute(message, this.catchHandler, this.config, this.bots);
+            CMD_PokeCordMessage.execute(message, this.catchHandler, this.config, this.bots, this.loggingHandler);
         }else {
             message.content = message.content.trim().toLowerCase();
             let prefix = message.content.substr(0,1);

@@ -4,9 +4,10 @@ import * as request from 'request';
 import { IConfig } from '../../Models/IConfig';
 import { Bot } from '../Bot';
 import { Logger, colors } from '../../Modules/Logger/Logger';
+import { LoggingHandler } from '../Handlers/LoggingHandler';
 
 export class CMD_PokeCordMessage{
-    static async execute(message: Discord.Message, catchHandler : CatchHandler, config : IConfig, bots : Bot[]){
+    static async execute(message: Discord.Message, catchHandler : CatchHandler, config : IConfig, bots : Bot[], loggingHandler: LoggingHandler){
 
         //Handle pokémon spawn
         if(message.embeds && message.embeds[0] && message.embeds[0].title.includes("A wild pokémon has appeared!")){
@@ -92,11 +93,13 @@ export class CMD_PokeCordMessage{
                     } else{
                         Logger.log(iv.concat('% ').concat(pokemon).concat(' ').concat(username), colors.fg.White);
                     }  
+                    loggingHandler.log(iv.concat('% ').concat(shinyString).concat(pokemon).concat(shinyString).concat(' ').concat(username));
  
                 } catch(exception){
                     Logger.log(exception, colors.fg.Red);
                     Logger.log("Error parsing IV for:", colors.fg.Red);
                     Logger.log(iv + "% " + pokemon, colors.fg.Red);
+                    loggingHandler.log(iv.concat('% ').concat(pokemon).concat(' --Error parsing IV. No shiny check concluded.'));
                 }
             }
         }
