@@ -68,5 +68,13 @@ export class Bot{
         return this.client.user;
     }
 
+    public fetchUser(user : string) : Promise<Discord.User>{
+        return this.client.fetchUser(user);
+    }
+
+    public fetchThumbnailURL() : string {
+        return this.client.user.displayAvatarURL;
+    }
+
 }
 
