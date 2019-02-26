@@ -5,7 +5,8 @@
     "prefix" : "+",
     "channelIDs" : {
         "spamChannel" : "538809106144821249",
-        "spawnChannel" : "504704524645040130"
+        "spawnChannel" : "504704524645040130",
+        "logChannel" : "550032730889519144"
     },
     "pokeCordID" : "365975655608745985",
     "tokens" : ["NTM3NzExMDUwMjI5ODA5MTUy.DyuVig.7FRFKNFoXxuKcGntqXpTzTYyrbs",

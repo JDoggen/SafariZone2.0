@@ -9,6 +9,7 @@ export interface IConfig{
     channelIDs : {
         spamChannel : string;
         spawnChannel : string;
+        logChannel : string
     };
     pokeCordID : string;
     tokens : string[];

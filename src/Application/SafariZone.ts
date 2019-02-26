@@ -8,6 +8,7 @@ import {Dictionary} from '../Models/Dictionary';
 import { MessageHandler } from './Handlers/MessageHandler';
 import { SpamHandler } from './Handlers/SpamHandler';
 import { CatchHandler } from './Handlers/CatchHandler';
+import { LoggingHandler } from './Handlers/LoggingHandler';
 
 export class SafariZone{
     private config ?: IConfig;
@@ -15,6 +16,7 @@ export class SafariZone{
     private dictionary : Dictionary;
     private spamHandler : SpamHandler;
     private catchHandler : CatchHandler;
+    private loggingHandler : LoggingHandler;
 
     constructor(){
         Logger.log('Starting Safari Zone v2.0', colors.fg.Blue);
@@ -97,9 +99,11 @@ export class SafariZone{
     }
 
     private startPolling() : void{
+        this.loggingHandler = new LoggingHandler(this.config, this.bots);
+        this.loggingHandler.log('---New instance---');
         this.spamHandler = new SpamHandler(this.config, this.bots, this.dictionary);
-        this.catchHandler = new CatchHandler(this.config, this.bots, this.spamHandler);
-        let messageHandler = new MessageHandler(this.bots, this.config, this.catchHandler);
+        this.catchHandler = new CatchHandler(this.config, this.bots, this.spamHandler, this.loggingHandler);
+        let messageHandler = new MessageHandler(this.bots, this.config, this.catchHandler, this.loggingHandler);
         this.bots[0].startPolling(messageHandler);
 
     }
