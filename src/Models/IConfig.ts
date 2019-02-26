@@ -1,4 +1,7 @@
+import * as Discord from "discord.js";
+
 export interface IConfig{
+    lastInfoUser : Discord.ClientUser;
     autocatch : boolean,
     spamming : boolean,
     pokecordPrefix : string,

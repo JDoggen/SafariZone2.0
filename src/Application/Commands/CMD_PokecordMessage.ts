@@ -31,47 +31,73 @@ export class CMD_PokeCordMessage{
 
         //Log info of pokémon
         else if(message.embeds && message.embeds[0] && message.embeds[0].description.includes("Total IV")){
-            let owner = message.embeds[0].thumbnail.url.replace('https://discordapp.com/assets/', '').replace('.png', '');
-            let user = await bots[0].fetchUser(owner);
-            let embed = message.embeds[0]
-            let pokemonIndex = embed.title.indexOf( ' ', embed.title.indexOf( ' ' ) + 1 );
-            let pokemon = embed.title.substring( pokemonIndex + 1 );
-            let ivIndex = embed.description.indexOf("Total IV %:** ");
-            let iv = embed.description.substring(ivIndex + 14 , embed.description.length -1);
-            if(iv.includes(".")){
-                if(iv.length == 4){
-                    if(iv.indexOf(".") == 1){
-                        iv = "0" + iv;
-                    } else if(iv.indexOf(".") == 2){
-                        iv = iv.concat("0");
+            //If -info shows icon of the user, log this user. Else it is the same as last logged.
+            let user : Discord.ClientUser;
+            let sameAsLast = false;
+
+            if(message.embeds[0].thumbnail){
+                let messagethumbnail = message.embeds[0].thumbnail.url.trim();
+
+
+                for(let bot of bots){
+                    if(bot.fetchThumbnailURL() === messagethumbnail){
+                        user = bot.getBotUser();
+                        config.lastInfoUser = user;
                     }
                 }
+
             } else{
-                iv = iv.concat(".00");
+                user = config.lastInfoUser;
+                sameAsLast = true;
             }
-            let legendary = CMD_PokeCordMessage.isLegendary(pokemon, config)
-            try{
-                let parsedIV = parseFloat(iv);
-                let shinyString = '';
-                if(CMD_PokeCordMessage.isShiny(pokemon)){
-                    shinyString = shinyString.concat('***');
-                    let indexOfSpace = pokemon.indexOf(' ');
-                    pokemon = pokemon.substring(indexOfSpace + 1);
-                }
-            
-                if(legendary || shinyString){
-                    Logger.log(iv.concat('% ').concat(shinyString).concat(pokemon).concat(shinyString).concat(' ').concat(user.username), colors.fg.Yellow);
-                } else if(parsedIV >= 80){
-                    Logger.log(iv.concat('% ').concat(pokemon).concat(user.username), colors.fg.Green);
-                } else if(parsedIV <= 20){
-                    Logger.log(iv.concat('% ').concat(pokemon).concat(user.username), colors.fg.Red);
+
+            if(user || sameAsLast){
+                //If only same as last, we need to log the user as 'undefined'
+                let embed = message.embeds[0]
+                let pokemonIndex = embed.title.indexOf( ' ', embed.title.indexOf( ' ' ) + 1 );
+                let pokemon = embed.title.substring( pokemonIndex + 1 );
+                let ivIndex = embed.description.indexOf("Total IV %:** ");
+                let iv = embed.description.substring(ivIndex + 14 , embed.description.length -1);
+                if(iv.includes(".")){
+                    if(iv.length == 4){
+                        if(iv.indexOf(".") == 1){
+                            iv = "0" + iv;
+                        } else if(iv.indexOf(".") == 2){
+                            iv = iv.concat("0");
+                        }
+                    }
                 } else{
-                    Logger.log(iv.concat('% ').concat(pokemon).concat(user.username), colors.fg.White);
-                }   
-            } catch(exception){
-                Logger.log(exception, colors.fg.Red);
-                Logger.log("Error parsing IV for:", colors.fg.Red);
-                Logger.log(iv + "% " + pokemon, colors.fg.Red);
+                    iv = iv.concat(".00");
+                }
+                let legendary = CMD_PokeCordMessage.isLegendary(pokemon, config)
+                try{
+                    let parsedIV = parseFloat(iv);
+                    let shinyString = '';
+                    if(CMD_PokeCordMessage.isShiny(pokemon)){
+                        shinyString = shinyString.concat('***');
+                        let indexOfSpace = pokemon.indexOf(' ');
+                        pokemon = pokemon.substring(indexOfSpace + 1);
+                    }
+                    let username;
+                    
+                    if(user){username = user.username}
+                    else{ username = 'undefined'; }
+
+                    if(legendary || shinyString){
+                        Logger.log(iv.concat('% ').concat(shinyString).concat(pokemon).concat(shinyString).concat(' ').concat(username), colors.fg.Yellow);
+                    } else if(parsedIV >= 80){
+                        Logger.log(iv.concat('% ').concat(pokemon).concat(' ').concat(username), colors.fg.Green);
+                    } else if(parsedIV <= 20){
+                        Logger.log(iv.concat('% ').concat(pokemon).concat(' ').concat(username), colors.fg.Red);
+                    } else{
+                        Logger.log(iv.concat('% ').concat(pokemon).concat(' ').concat(username), colors.fg.White);
+                    }  
+ 
+                } catch(exception){
+                    Logger.log(exception, colors.fg.Red);
+                    Logger.log("Error parsing IV for:", colors.fg.Red);
+                    Logger.log(iv + "% " + pokemon, colors.fg.Red);
+                }
             }
         }
     }

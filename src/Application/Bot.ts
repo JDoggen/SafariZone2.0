@@ -72,5 +72,9 @@ export class Bot{
         return this.client.fetchUser(user);
     }
 
+    public fetchThumbnailURL() : string {
+        return this.client.user.displayAvatarURL;
+    }
+
 }
 
