@@ -68,5 +68,9 @@ export class Bot{
         return this.client.user;
     }
 
+    public fetchUser(user : string) : Promise<Discord.User>{
+        return this.client.fetchUser(user);
+    }
+
 }
 

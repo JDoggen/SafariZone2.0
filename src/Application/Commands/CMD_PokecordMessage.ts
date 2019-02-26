@@ -6,7 +6,7 @@ import { Bot } from '../Bot';
 import { Logger, colors } from '../../Modules/Logger/Logger';
 
 export class CMD_PokeCordMessage{
-    static execute(message: Discord.Message, catchHandler : CatchHandler, config : IConfig, bots : Bot[]){
+    static async execute(message: Discord.Message, catchHandler : CatchHandler, config : IConfig, bots : Bot[]){
 
         //Handle pokémon spawn
         if(message.embeds && message.embeds[0] && message.embeds[0].title.includes("A wild pokémon has appeared!")){
@@ -31,6 +31,8 @@ export class CMD_PokeCordMessage{
 
         //Log info of pokémon
         else if(message.embeds && message.embeds[0] && message.embeds[0].description.includes("Total IV")){
+            let owner = message.embeds[0].thumbnail.url.replace('https://discordapp.com/assets/', '').replace('.png', '');
+            let user = await bots[0].fetchUser(owner);
             let embed = message.embeds[0]
             let pokemonIndex = embed.title.indexOf( ' ', embed.title.indexOf( ' ' ) + 1 );
             let pokemon = embed.title.substring( pokemonIndex + 1 );
@@ -58,13 +60,13 @@ export class CMD_PokeCordMessage{
                 }
             
                 if(legendary || shinyString){
-                    Logger.log(iv.concat('% ').concat(shinyString).concat(pokemon).concat(shinyString), colors.fg.Yellow);
+                    Logger.log(iv.concat('% ').concat(shinyString).concat(pokemon).concat(shinyString).concat(' ').concat(user.username), colors.fg.Yellow);
                 } else if(parsedIV >= 80){
-                    Logger.log(iv.concat('% ').concat(pokemon), colors.fg.Green);
+                    Logger.log(iv.concat('% ').concat(pokemon).concat(user.username), colors.fg.Green);
                 } else if(parsedIV <= 20){
-                    Logger.log(iv.concat('% ').concat(pokemon), colors.fg.Red);
+                    Logger.log(iv.concat('% ').concat(pokemon).concat(user.username), colors.fg.Red);
                 } else{
-                    Logger.log(iv.concat('% ').concat(pokemon), colors.fg.White);
+                    Logger.log(iv.concat('% ').concat(pokemon).concat(user.username), colors.fg.White);
                 }   
             } catch(exception){
                 Logger.log(exception, colors.fg.Red);
