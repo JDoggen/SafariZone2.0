@@ -6,7 +6,8 @@
     "channelIDs" : {
         "spamChannel" : "538809106144821249",
         "spawnChannel" : "504704524645040130",
-        "logChannel" : "550032730889519144"
+        "logChannel" : "550032730889519144",
+        "commandsChannel" : "504858363423621130"
     },
     "pokeCordID" : "365975655608745985",
     "tokens" : ["NTM3NzExMDUwMjI5ODA5MTUy.DyuVig.7FRFKNFoXxuKcGntqXpTzTYyrbs",
@@ -20,11 +21,15 @@
         "infoMin" : 3000,
         "infoVariable" : 3000,
         "unknownPokemon" : 5000,
-        "autoList" : 5000
+        "autoList" : 5000,
+        "tradePollResponse" : 3000,
+        "tradeSendTradeInvite" : 3000,
+        "tradeAddPokemon" : 5000,
+        "tradeConfirm" : 2000
     },
     "timeouts" : {
         "spawn" : 30000,
-        "unknownSpawn" : 180000
+        "unknownPokemon" : 180000
     },
     "maxAutolistingStages" : 15,
     "undetectableList" : [

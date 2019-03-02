@@ -9,7 +9,8 @@ export interface IConfig{
     channelIDs : {
         spamChannel : string;
         spawnChannel : string;
-        logChannel : string
+        logChannel : string;
+        commandsChannel : string;
     };
     pokeCordID : string;
     tokens : string[];
@@ -20,6 +21,10 @@ export interface IConfig{
         infoVariable : number;
         unknownPokemon : number;
         autoList : number;
+        tradePollResponse : number;
+        tradeSendTradeInvite : number;
+        tradeAddPokemon : number;
+        tradeConfirm : number;
     },
     timeouts : {
         spam : number; 

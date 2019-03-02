@@ -10,6 +10,7 @@ import { Logger, colors } from "../../Modules/Logger/Logger";
 import { CMD_Confirm } from "../Commands/CMD_Confirm";
 import { CatchHandler } from "./CatchHandler";
 import { LoggingHandler } from "./LoggingHandler";
+import { CMD_Trade } from "../Commands/CMD_Trade";
 
 export class MessageHandler{
    
@@ -45,6 +46,7 @@ export class MessageHandler{
             else if(command === "autolist") CMD_Autolist.execute(channelID, this.bots, this.config, target, parameters);
             else if(command === "cmd") CMD_Cmd.execute(channelID, this.bots, this.config, target, parameters);
             else if(command === "confirm") CMD_Confirm.execute(channelID, this.bots, this.config, target, parameters);
+            else if(command === 'trade') CMD_Trade.execute(channelID, this.bots, this.config, target, parameters, message.author.id);
             
         }
     }
