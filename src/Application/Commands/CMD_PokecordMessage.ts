@@ -3,20 +3,28 @@ import { CatchHandler } from '../Handlers/CatchHandler';
 import * as request from 'request';
 import { IConfig } from '../../Models/IConfig';
 import { Bot } from '../Bot';
-import { Logger, colors } from '../../Modules/Logger/Logger';
+import { Logger, colors, logLevel} from '../../Modules/Logger/Logger';
 import { LoggingHandler } from '../Handlers/LoggingHandler';
 
 export class CMD_PokeCordMessage{
     static async execute(message: Discord.Message, catchHandler : CatchHandler, config : IConfig, bots : Bot[], loggingHandler: LoggingHandler){
+        Logger.log('Executing PokeCordMessage', logLevel.File);
 
         //Handle pokémon spawn
         if(message.embeds && message.embeds[0] && message.embeds[0].title.includes("A wild pokémon has appeared!")){
             let url = message.embeds[0].image.url;
+            Logger.log(`Requesting pokémon identify check for url ${url}`, logLevel.File);
             request.post({
                 url:     'https://pokecord.exchange/identify-check',
                 form:    { parseurl: url }
               }, (error : any, response : any, body : string) => {
-                  catchHandler.catch(body);
+                  Logger.log(`Request returned with error[${error}] response[${response}] body[${body}]`, logLevel.File);
+                  if(error){
+                      Logger.log('Error in request', logLevel.File);
+                      catchHandler.catch('could not be identified');
+                  } else{
+                    catchHandler.catch(body);
+                  }
               });
         }
 
@@ -37,11 +45,16 @@ export class CMD_PokeCordMessage{
             let sameAsLast = false;
 
             if(message.embeds[0].thumbnail){
-                let messagethumbnail = message.embeds[0].thumbnail.url.trim();
-
+                let messagethumbnailWithSize = message.embeds[0].thumbnail.url.trim();
+                let messageSizeIndex = messagethumbnailWithSize.indexOf('?size');
+                let messageThumbnail = messageSizeIndex == -1 ?  messagethumbnailWithSize : messagethumbnailWithSize.substring(0, messageSizeIndex);
 
                 for(let bot of bots){
-                    if(bot.fetchThumbnailURL() === messagethumbnail){
+                    let botImageURLWithSize = bot.fetchThumbnailURL();
+                    let botSizeIndex = botImageURLWithSize.indexOf('?size');
+                    let botThumbnail = botSizeIndex == -1 ? botImageURLWithSize : botImageURLWithSize.substring(0, botSizeIndex);
+
+                    if(botThumbnail === messageThumbnail){
                         user = bot.getBotUser();
                         config.lastInfoUser = user;
                     }
@@ -85,20 +98,20 @@ export class CMD_PokeCordMessage{
                     else{ username = 'undefined'; }
 
                     if(legendary || shinyString){
-                        Logger.log(iv.concat('% ').concat(shinyString).concat(pokemon).concat(shinyString).concat(' ').concat(username), colors.fg.Yellow);
+                        Logger.log(iv.concat('% ').concat(shinyString).concat(pokemon).concat(shinyString).concat(' ').concat(username), logLevel.Both, colors.fg.Yellow);
                     } else if(parsedIV >= 80){
-                        Logger.log(iv.concat('% ').concat(pokemon).concat(' ').concat(username), colors.fg.Green);
+                        Logger.log(iv.concat('% ').concat(pokemon).concat(' ').concat(username), logLevel.Both, colors.fg.Green);
                     } else if(parsedIV <= 20){
-                        Logger.log(iv.concat('% ').concat(pokemon).concat(' ').concat(username), colors.fg.Red);
+                        Logger.log(iv.concat('% ').concat(pokemon).concat(' ').concat(username), logLevel.Both, colors.fg.Red);
                     } else{
-                        Logger.log(iv.concat('% ').concat(pokemon).concat(' ').concat(username), colors.fg.White);
+                        Logger.log(iv.concat('% ').concat(pokemon).concat(' ').concat(username), logLevel.Both, colors.fg.White);
                     }  
                     loggingHandler.log(iv.concat('% ').concat(shinyString).concat(pokemon).concat(shinyString).concat(' ').concat(username));
  
                 } catch(exception){
-                    Logger.log(exception, colors.fg.Red);
-                    Logger.log("Error parsing IV for:", colors.fg.Red);
-                    Logger.log(iv + "% " + pokemon, colors.fg.Red);
+                    Logger.log(exception, logLevel.Both, colors.fg.Red);
+                    Logger.log("Error parsing IV for:", logLevel.Both, colors.fg.Red);
+                    Logger.log(iv + "% " + pokemon, logLevel.Both, colors.fg.Red);
                     loggingHandler.log(iv.concat('% ').concat(pokemon).concat(' --Error parsing IV. No shiny check concluded.'));
                 }
             }

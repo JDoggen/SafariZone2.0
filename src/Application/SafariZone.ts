@@ -2,7 +2,7 @@ import * as q from 'q';
 import * as path from 'path';
 import {IConfig} from '../Models/IConfig';
 import * as fs from 'fs';
-import {Logger, colors} from '../Modules/Logger/Logger';
+import {Logger, colors, logLevel} from '../Modules/Logger/Logger';
 import {Bot} from './Bot';
 import {Dictionary} from '../Models/Dictionary';
 import { MessageHandler } from './Handlers/MessageHandler';
@@ -19,8 +19,8 @@ export class SafariZone{
     private loggingHandler : LoggingHandler;
 
     constructor(){
-        Logger.log('Starting Safari Zone v2.0', colors.fg.Blue);
-        Logger.log("Booting...", colors.fg.Blue);
+        Logger.log('Starting Safari Zone v2.0', logLevel.Both, colors.fg.Blue);
+        Logger.log("Booting...", logLevel.Both, colors.fg.Blue);
         this.readConfig()
         .then(config=>{
             this.config = config;
@@ -35,21 +35,21 @@ export class SafariZone{
                     this.exitApplication('No logged in account found');
                 }
             });
-        });
+        })
 
     }
 
     private readConfig() : q.Promise<IConfig>{
-        Logger.log("Reading config...", colors.fg.Blue);
+        Logger.log("Reading config...", logLevel.Both, colors.fg.Blue);
         let defer = q.defer<IConfig>()
         let configPath = path.join('.', "config.json");
         fs.readFile(configPath,"utf-8", (err, data) =>{
             if(!err){
                 let config = JSON.parse(data) as IConfig;
-                Logger.log('Config succesfully read', colors.fg.Green);
+                Logger.log('Config succesfully read', logLevel.Both, colors.fg.Green);
                 defer.resolve(config);
             } else{
-                Logger.log('Error whilest reading config file', colors.fg.Red);
+                Logger.log('Error whilest reading config file', logLevel.Both, colors.fg.Red);
                 defer.reject(err);
             }   
         });
@@ -58,10 +58,10 @@ export class SafariZone{
 
     private initBots() : q.Promise<boolean>{
         let defer = q.defer<boolean>();
-        Logger.log('Initializing bots...', colors.fg.Blue);
+        Logger.log('Initializing bots...', logLevel.Both, colors.fg.Blue);
         let count = 0;
         for(let token of this.config.tokens){
-            Logger.log('Creating bot for '.concat(token), colors.fg.Blue);
+            Logger.log('Creating bot for '.concat(token),logLevel.Both,  colors.fg.Blue);
             let bot = new Bot(token);
             bot.init()
             .then(result =>{
@@ -73,8 +73,8 @@ export class SafariZone{
                     defer.resolve(true);
                 }
             }).catch(err =>{
-                Logger.log('Error:', colors.fg.Red);
-                Logger.log(err, colors.fg.Red);
+                Logger.log('Error:', logLevel.Both, colors.fg.Red);
+                Logger.log(err, logLevel.Both, colors.fg.Red);
             })
         }
         return defer.promise;
@@ -82,7 +82,7 @@ export class SafariZone{
 
     private checkAccountStatus() : boolean{
         if(this.bots.length > 0){
-            Logger.log('Found '.concat(this.bots.length.toString()).concat(' bots, proceeding'), colors.fg.Blue);
+            Logger.log('Found '.concat(this.bots.length.toString()).concat(' bots, proceeding'), logLevel.Both, colors.fg.Blue);
             return true;
         } else{
             return false;
@@ -90,12 +90,12 @@ export class SafariZone{
     }
 
     private exitApplication(reason ?: string) : void{
-        Logger.log('Error during execution of application', colors.fg.Red);
+        Logger.log('Error during execution of application', logLevel.Both, colors.fg.Red);
         if(reason){
-            Logger.log('Reason:', colors.fg.Red);
-            Logger.log(reason, colors.fg.Red);
+            Logger.log('Reason:', logLevel.Both, colors.fg.Red);
+            Logger.log(reason, logLevel.Both, colors.fg.Red);
         }
-        Logger.log('Exiting program', colors.fg.Red);
+        Logger.log('Exiting program', logLevel.Both, colors.fg.Red);
     }
 
     private startPolling() : void{

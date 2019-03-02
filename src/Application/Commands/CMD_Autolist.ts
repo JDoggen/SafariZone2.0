@@ -1,10 +1,12 @@
 import { Bot } from "../Bot";
 import { IConfig } from "../../Models/IConfig";
 import * as Discord from 'discord.js';
-import { Logger, colors } from "../../Modules/Logger/Logger";
+import { Logger, colors, logLevel } from "../../Modules/Logger/Logger";
 
 export class CMD_Autolist{
     static execute(channelID : string, bots: Bot[], config: IConfig, target: string, parameters: string[]){
+        Logger.log('Executing autolist command', logLevel.File);
+        Logger.log(`target [${target}] parameters[${parameters}]`, logLevel.File);
         for(let bot of bots){
             if(target.includes(bot.getID()) || target == 'all'){
                 if(parameters && parameters[0]){
@@ -47,16 +49,16 @@ export class CMD_Autolist{
                     setTimeout(CMD_Autolist.getMarketPrice, config.delays.autoList, bot, config);
 
                 } else{
-                    Logger.log('Error, found another message with incorrect ID. Please try again');
+                    Logger.log('Error, found another message with incorrect ID. Please try again', logLevel.Both, colors.fg.Red);
                 }
 
             }else{
-                Logger.log('Error retrieving message for channel '.concat(channelID), colors.fg.Red);
+                Logger.log('Error retrieving message for channel '.concat(channelID), logLevel.Both, colors.fg.Red);
             }
         })
         .catch(err =>{
-            Logger.log('Error retrieving message for channel '.concat(channelID), colors.fg.Red);
-            Logger.log(err, colors.fg.Red);
+            Logger.log('Error retrieving message for channel '.concat(channelID), logLevel.Both, colors.fg.Red);
+            Logger.log(err, logLevel.Both, colors.fg.Red);
         })
     }
 
@@ -113,8 +115,12 @@ export class CMD_Autolist{
             } else if(bot.botConfig.autolisting.stage <= config.maxAutolistingStages){
                 setTimeout(CMD_Autolist.getMarketPrice, config.delays.autoList, bot, config);
             } else {
-                Logger.log('Could not identify price of pokémon. Consider listing the pokémon yourself or chaning the maximum autolisting Stages', colors.fg.Red);
+                Logger.log('Could not identify price of pokémon. Consider listing the pokémon yourself or chaning the maximum autolisting Stages', logLevel.Both, colors.fg.Red);
             }
+        })
+        .catch(err=>{
+            Logger.log('error in command retrieveMessages', logLevel.File);
+            Logger.log(err, logLevel.Both);
         })
     }
 

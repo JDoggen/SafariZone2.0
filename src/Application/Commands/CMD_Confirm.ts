@@ -1,9 +1,12 @@
 import { Bot } from "../Bot";
 import { IConfig } from "../../Models/IConfig";
+import {Logger, logLevel} from "../../Modules/Logger/Logger";
 import * as Discord from 'discord.js';
 
 export class CMD_Confirm{
     static execute(channelID : string, bots: Bot[], config: IConfig, target: string, parameters: string[]){
+        Logger.log('Executing Confirm command', logLevel.File);
+        Logger.log(`target [${target}] parameters[${parameters}]`, logLevel.File);
         for(let bot of bots){
             if(target.includes(bot.getID()) || target === 'all'){
                 let price;

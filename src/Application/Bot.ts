@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as q from 'q';
-import { Logger, colors } from '../Modules/Logger/Logger';
+import { Logger, colors, logLevel } from '../Modules/Logger/Logger';
 import { MessageHandler } from './Handlers/MessageHandler';
 import { IBotConfig } from '../Models/IBotConfig';
 
@@ -13,6 +13,9 @@ export class Bot{
         private token: string
     ){
         this.client = new Discord.Client();
+        this.client.on('error', err =>{
+            Logger.log(err.message, logLevel.File);
+        });
         this.botConfig = {
                 autolisting : {
                 pokemonID : '',
@@ -37,12 +40,12 @@ export class Bot{
         let defer = q.defer<boolean>();
         this.client.login(this.token)
         .then(result=>{
-            Logger.log('Succesfully logged in for '.concat(this.token), colors.fg.Green);
+            Logger.log('Succesfully logged in for '.concat(this.token), logLevel.Both, colors.fg.Green);
             defer.resolve(true);
         })
         .catch(err =>{
-            Logger.log('Error while logging in for '.concat(this.token).concat('.'), colors.fg.Red);
-            Logger.log('Token might be invalid, or account might be suspended', colors.fg.Red);
+            Logger.log('Error while logging in for '.concat(this.token).concat('.'), logLevel.Both, colors.fg.Red);
+            Logger.log('Token might be invalid, or account might be suspended', logLevel.Both, colors.fg.Red);
             defer.resolve(false);
         });
         return defer.promise;
@@ -51,7 +54,7 @@ export class Bot{
     public startPolling(messageHandler : MessageHandler) : void{
         this.messageHandler = messageHandler;
         this.client.on('message', message => {this.messageHandler.handle(message)});
-        Logger.log('Started polling...', colors.fg.Blue);
+        Logger.log('Started polling...', logLevel.Both, colors.fg.Blue);
     }
 
     public sendMessage(channelID : string, message : string){

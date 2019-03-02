@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as fs from 'fs';
-import { Logger, colors } from '../Modules/Logger/Logger';
+import { Logger, colors, logLevel } from '../Modules/Logger/Logger';
 export class Dictionary{
 
     private fileExtension : string = "word.csv";
@@ -10,11 +10,11 @@ export class Dictionary{
     constructor(){}
 
     public initialize(){
-        Logger.log("Initializing dictionary...", colors.fg.Blue);
+        Logger.log("Initializing dictionary...", logLevel.Both, colors.fg.Blue);
         for(let element of this.alphabet){
             this.addFile(element);
         }
-        Logger.log("Initialized Dictionary succesfully!", colors.fg.Blue); 
+        Logger.log("Initialized Dictionary succesfully!", logLevel.Both, colors.fg.Blue); 
     }
 
     private addFile(letter: string){

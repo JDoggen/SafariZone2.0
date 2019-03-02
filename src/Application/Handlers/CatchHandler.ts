@@ -13,21 +13,21 @@ export class CatchHandler{
     }
     public catch(pokemon : string){
         if (pokemon.toLowerCase().includes("could not be identified")){ 
-            this.spamHandler.delaySpamming(this.config.delays.unknownPokemon);
-            setTimeout(this.catchUnknownPokemon, this.config.delays.unknownPokemon, this.config, this.config.undetectableList, this.sendCatchCommand);
+            this.spamHandler.delaySpamming(this.config.timeouts.unknownPokemon);
+            setTimeout(this.catchUnknownPokemon.bind(this), this.config.delays.unknownPokemon, this.config, 0, this.bots);
         } else{
             pokemon = pokemon.replace("<div class='typewriter'>", "").replace("</div>", "");
             let delay = Math.round(Math.random() * (this.config.delays.catchVariable) + this.config.delays.catchMin);
             this.spamHandler.delaySpamming(delay);
-            setTimeout(this.sendCatchCommand, delay, this.config, this.bots[Math.floor(Math.random() * this.bots.length)], pokemon, 0);
-            
+            setTimeout(this.sendCatchCommand.bind(this), delay, this.config, this.bots[Math.floor(Math.random() * this.bots.length)], pokemon, 0);  
         }
     }
 
-    private catchUnknownPokemon(config : IConfig, undetectableList : string[], stage : number, bots: Bot[], catchFunction : Function, catchUnkownFunction : Function){
-        if(!(stage >= undetectableList.length)){
-            catchFunction(config, bots[Math.floor(Math.random() * this.bots.length)], undetectableList[stage]);
-            setTimeout(catchUnkownFunction, config.delays.unknownPokemon, config, undetectableList, stage, bots, catchFunction, catchUnkownFunction);
+    private catchUnknownPokemon(config : IConfig, stage : number, bots: Bot[]){
+        if((stage < config.undetectableList.length)){
+            this.sendCatchCommand(config, bots[Math.floor(Math.random() * this.bots.length)], config.undetectableList[stage]);
+            stage++;
+            setTimeout(this.catchUnknownPokemon.bind(this), config.delays.unknownPokemon, config, stage, bots);
         }
     }
 
