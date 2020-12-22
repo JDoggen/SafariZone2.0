@@ -64,7 +64,7 @@ export class Bot{
 
     public retrieveMessages(channelID : string, amount : number) : Promise<Discord.Collection<string, Discord.Message>>{
         let channel = this.client.channels.get(channelID) as Discord.TextChannel;
-        return channel.fetchMessages({limit : amount})
+        return channel.fetchMessages({limit : amount});
     }
 
     public getBotUser() : Discord.ClientUser{
